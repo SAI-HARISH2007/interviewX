@@ -3,186 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InterviewX - AI-Powered Interview Practice</title>
+    <title>InterviewX — LLM-Powered Interview Practice</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236d7cff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='1' fill='%236d7cff'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <!-- No face-api.js needed - using custom webcam analysis -->
 </head>
 <body>
+    <!-- SVG icon sprite -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+            <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="m15 10 6-3v10l-6-3"/></symbol>
+            <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4"/></symbol>
+            <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m7 15 4-6 4 3 5-8"/></symbol>
+            <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.7L19.6 10l-5.7 1.9L12 17.6l-1.9-5.7L4.4 10l5.7-1.9z"/></symbol>
+            <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+            <symbol id="i-words" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h14"/></symbol>
+            <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></symbol>
+            <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
+            <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></symbol>
+            <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+        </defs>
+    </svg>
+
     <!-- Authentication Screen -->
     <div id="authScreen" class="auth-screen">
-        <div class="auth-container">
+        <div class="auth-bg-orb orb-1"></div>
+        <div class="auth-bg-orb orb-2"></div>
+        <div class="auth-container glass">
             <div class="auth-header">
-                <h1>🎯 InterviewX</h1>
-                <p>AI-Powered Interview Practice Platform</p>
+                <div class="logo-mark"><svg class="icon"><use href="#i-target"/></svg></div>
+                <h1>InterviewX</h1>
+                <p>Practice interviews with real LLM feedback</p>
             </div>
-            
+
             <!-- Login Form -->
             <div id="loginForm" class="auth-form active">
-                <h2>Welcome Back!</h2>
+                <h2>Welcome back</h2>
                 <div class="form-group">
                     <label for="loginUsername">Username</label>
-                    <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                    <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username" required>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required>
                 </div>
-                <button id="loginBtn" class="btn primary">Login</button>
-                <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+                <button id="loginBtn" class="btn primary full">Log in</button>
+                <p class="auth-switch">No account yet? <a href="#" id="showSignup">Sign up</a></p>
             </div>
-            
+
             <!-- Signup Form -->
             <div id="signupForm" class="auth-form">
-                <h2>Create Account</h2>
+                <h2>Create account</h2>
                 <div class="form-group">
-                    <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    <label for="signupName">Full name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" autocomplete="name" required>
                 </div>
                 <div class="form-group">
                     <label for="signupUsername">Username</label>
-                    <input type="text" id="signupUsername" placeholder="Choose a username" required>
+                    <input type="text" id="signupUsername" placeholder="Choose a username" autocomplete="username" required>
                 </div>
                 <div class="form-group">
                     <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                    <input type="password" id="signupPassword" placeholder="Create a password" autocomplete="new-password" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupConfirmPassword">Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                    <label for="signupConfirmPassword">Confirm password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" autocomplete="new-password" required>
                 </div>
-                <button id="signupBtn" class="btn primary">Sign Up</button>
-                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Login</a></p>
+                <button id="signupBtn" class="btn primary full">Sign up</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Log in</a></p>
             </div>
-            
+
             <div id="authMessage" class="auth-message"></div>
+            <p class="auth-note">Accounts are stored only in this browser (demo — not a real auth system).</p>
         </div>
     </div>
 
     <!-- Main Application -->
     <div id="mainApp" class="main-app hidden">
-        <!-- Header -->
         <header class="app-header">
             <div class="header-left">
-                <h1>🎯 InterviewX</h1>
+                <div class="logo-mark small"><svg class="icon"><use href="#i-target"/></svg></div>
+                <h1>InterviewX</h1>
+                <span id="aiStatusBadge" class="ai-status">● checking…</span>
             </div>
             <div class="header-right">
                 <span id="userName" class="user-name"></span>
-                <button id="logoutBtn" class="btn secondary">Logout</button>
+                <button id="logoutBtn" class="btn secondary">Log out</button>
             </div>
         </header>
 
-        <!-- Main Content -->
         <div class="container">
-            <div class="main-content">
-                <!-- Left Side - Video Interview -->
-                <div class="video-section glass">
-                    <div class="section-header">
-                        <h2>📹 Video Interview</h2>
-                        <div class="controls">
-                            <button id="startInterviewBtn" class="btn primary">▶ Start Interview</button>
-                            <button id="stopInterviewBtn" class="btn danger hidden">⏹ Stop</button>
-                            <button id="uploadResumeBtn" class="btn secondary">📄 Upload Resume</button>
-                        </div>
+            <!-- Interview setup -->
+            <section id="setupPanel" class="setup-panel glass">
+                <div class="setup-fields">
+                    <div class="form-group">
+                        <label for="roleInput">Target role</label>
+                        <input type="text" id="roleInput" placeholder="e.g. Frontend Developer, Data Analyst, Product Manager" value="Software Engineer">
                     </div>
-
-                    <!-- Video Display -->
-                    <div class="video-container">
-                        <video id="videoElement" autoplay muted></video>
-                        <canvas id="videoCanvas" style="display:none;"></canvas>
-                        <div id="cameraStatus" class="camera-status">Camera Off</div>
+                    <div class="form-group compact">
+                        <label for="difficultySelect">Difficulty</label>
+                        <select id="difficultySelect">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
                     </div>
-
-                    <!-- Current Question Display -->
-                    <div class="question-display">
-                        <h3>Current Question:</h3>
-                        <p id="currentQuestion">Click "Start Interview" to begin</p>
-                        <div id="questionTimer" class="timer">Time: 0s</div>
+                    <div class="form-group compact">
+                        <label for="questionCount">Questions</label>
+                        <select id="questionCount">
+                            <option value="4">4</option>
+                            <option value="6" selected>6</option>
+                            <option value="8">8</option>
+                        </select>
                     </div>
-
-                    <!-- Voice Controls -->
-                    <div class="voice-controls">
-                        <button id="micBtn" class="btn mic-btn" disabled>🎤 Start Speaking</button>
-                        <div id="transcriptDisplay" class="transcript">Your answer will appear here...</div>
+                    <div class="setup-actions">
+                        <button id="startInterviewBtn" class="btn primary large">
+                            <svg class="icon"><use href="#i-play"/></svg> Start Interview
+                        </button>
+                        <button id="stopInterviewBtn" class="btn danger large hidden">
+                            <svg class="icon"><use href="#i-stop"/></svg> Stop
+                        </button>
                     </div>
-
-                    <!-- Resume Upload (Hidden) -->
-                    <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" style="display:none;">
                 </div>
+                <p id="questionSourceLabel" class="question-source"></p>
+            </section>
 
-                <!-- Right Side - Analytics -->
-                <div class="analytics-section glass">
+            <div class="main-content">
+                <!-- Left: Video Interview -->
+                <section class="video-section glass">
                     <div class="section-header">
-                        <h2>📊 Real-Time Analytics</h2>
+                        <h2><svg class="icon"><use href="#i-video"/></svg> Interview</h2>
+                        <span id="questionProgress" class="question-progress"></span>
                     </div>
 
-                    <!-- Confidence Meter -->
-                    <div class="confidence-meter">
-                        <h3>😊 Confidence Level</h3>
-                        <div class="confidence-bar-container">
-                            <div id="confidenceBar" class="confidence-bar" style="width: 0%"></div>
+                    <div class="video-container">
+                        <video id="videoElement" autoplay muted playsinline></video>
+                        <canvas id="videoCanvas" style="display:none;"></canvas>
+                        <div id="cameraStatus" class="camera-status">Camera off</div>
+                    </div>
+
+                    <div class="question-display">
+                        <div class="question-meta">
+                            <span id="questionCategory" class="question-category"></span>
+                            <span id="questionTimer" class="timer"></span>
                         </div>
-                        <p id="confidenceText">0% Confident</p>
+                        <p id="currentQuestion">Pick a role above, then press <strong>Start Interview</strong>.</p>
                     </div>
 
-                    <!-- Real-time Graph -->
+                    <div class="voice-controls">
+                        <button id="micBtn" class="btn mic-btn" disabled>
+                            <svg class="icon"><use href="#i-mic"/></svg> Start Speaking
+                        </button>
+                        <div id="transcriptDisplay" class="transcript">Your answer will be transcribed here (browser speech recognition — works best in Chrome/Edge)…</div>
+                    </div>
+                </section>
+
+                <!-- Right: Analytics -->
+                <section class="analytics-section glass">
+                    <div class="section-header">
+                        <h2><svg class="icon"><use href="#i-chart"/></svg> Live Metrics</h2>
+                        <span class="metrics-note" title="These metrics are measured locally in your browser — they are not AI.">local, not AI</span>
+                    </div>
+
+                    <div class="presence-meter">
+                        <div class="presence-head">
+                            <h3>Visual presence</h3>
+                            <p id="presenceText">0%</p>
+                        </div>
+                        <div class="presence-bar-container">
+                            <div id="presenceBar" class="presence-bar" style="width: 0%"></div>
+                        </div>
+                        <p class="metric-caption">Camera heuristic: are you in frame &amp; is the scene stable? Not emotion or confidence detection.</p>
+                    </div>
+
                     <div class="chart-container">
                         <canvas id="realtimeChart"></canvas>
                     </div>
 
-                    <!-- Stats Cards -->
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon">⏱️</div>
+                            <svg class="icon stat-icon"><use href="#i-clock"/></svg>
                             <div class="stat-value" id="responseTime">0s</div>
-                            <div class="stat-label">Response Time</div>
+                            <div class="stat-label">Response time</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon">🎯</div>
+                            <svg class="icon stat-icon"><use href="#i-alert"/></svg>
                             <div class="stat-value" id="fillerWords">0</div>
-                            <div class="stat-label">Filler Words</div>
+                            <div class="stat-label">Filler words</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon">💬</div>
+                            <svg class="icon stat-icon"><use href="#i-words"/></svg>
                             <div class="stat-value" id="wordCount">0</div>
-                            <div class="stat-label">Words Spoken</div>
+                            <div class="stat-label">Words spoken</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">✨</div>
-                            <div class="stat-value" id="aiScore">-</div>
-                            <div class="stat-label">AI Score</div>
+                        <div class="stat-card accent">
+                            <svg class="icon stat-icon"><use href="#i-sparkle"/></svg>
+                            <div class="stat-value" id="aiScore">–</div>
+                            <div class="stat-label">Answer score</div>
                         </div>
                     </div>
 
-                    <!-- AI Feedback Panel -->
                     <div class="feedback-panel">
-                        <h3>🤖 AI Feedback</h3>
+                        <h3><svg class="icon"><use href="#i-sparkle"/></svg> Feedback</h3>
                         <div id="aiFeedback" class="feedback-content">
-                            <p>Start answering questions to receive AI-powered feedback!</p>
+                            <p class="feedback-placeholder">Answer a question to get feedback. With the server + Groq key running, feedback comes from a real LLM; otherwise you'll see a clearly-labeled offline heuristic.</p>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
 
             <!-- Interview History -->
-            <div class="history-section glass">
-                <h2>📜 Interview History</h2>
+            <section class="history-section glass">
+                <h2><svg class="icon"><use href="#i-history"/></svg> Interview History</h2>
                 <div id="historyContainer" class="history-container">
-                    <p>No previous interviews. Start your first interview!</p>
+                    <p>No previous interviews. Start your first one!</p>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="loader"></div>
-        <p>Processing with AI...</p>
+        <p>Working…</p>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts (order matters: config & utils first) -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/camera.js"></script>

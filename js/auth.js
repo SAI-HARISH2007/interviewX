@@ -121,11 +121,16 @@ class AuthManager {
     }
 
     handleLogout() {
-        if (confirm('Are you sure you want to logout?')) {
-            storage.logout();
-            this.showAuthScreen();
-            this.clearForms();
-        }
+        Modal.confirm({
+            title: 'Log out',
+            message: 'Are you sure you want to log out?',
+            confirmText: 'Log out',
+            onConfirm: () => {
+                storage.logout();
+                this.showAuthScreen();
+                this.clearForms();
+            }
+        });
     }
 
     showLoginForm() {
@@ -166,15 +171,22 @@ class AuthManager {
         }
 
         historyContainer.innerHTML = '';
-        history.reverse().forEach((session, index) => {
+        history.slice().reverse().forEach((session, index) => {
+            const isLLM = session.feedbackSource === 'llm';
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
             historyItem.innerHTML = `
-                <h4>Interview Session #${history.length - index}</h4>
-                <p><strong>Date:</strong> ${new Date(session.timestamp).toLocaleString()}</p>
-                <p><strong>Questions Answered:</strong> ${session.questionsAnswered || 0}</p>
-                <p><strong>Average Confidence:</strong> ${session.avgConfidence || 0}%</p>
-                <p><strong>AI Score:</strong> ${session.aiScore || 'N/A'}</p>
+                <div class="history-item-head">
+                    <h4>#${history.length - index} · ${escapeHtml(session.role || 'General')}</h4>
+                    <span class="source-badge ${isLLM ? 'llm' : 'offline'}">${isLLM ? '🤖 LLM scored' : '⚠️ Heuristic'}</span>
+                </div>
+                <p class="history-date">${new Date(session.timestamp).toLocaleString()}</p>
+                <div class="history-stats">
+                    <span><strong>${session.questionsAnswered || 0}</strong> questions</span>
+                    <span><strong>${session.aiScore != null ? session.aiScore + '/10' : 'N/A'}</strong> score</span>
+                    <span><strong>${session.avgPresence ?? session.avgConfidence ?? 0}%</strong> presence</span>
+                    <span><strong>${session.totalFillers || 0}</strong> fillers</span>
+                </div>
             `;
             historyContainer.appendChild(historyItem);
         });

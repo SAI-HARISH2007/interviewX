@@ -27,15 +27,15 @@ class ChartsManager {
                 datasets: [{
                     label: 'Visual Presence (%)',
                     data: this.presenceData,
-                    borderColor: 'rgb(102, 126, 234)',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: '#8b96ff',
+                    backgroundColor: 'rgba(109, 124, 255, 0.12)',
                     borderWidth: 3,
                     tension: 0.4,
                     fill: true,
                     pointRadius: 4,
                     pointHoverRadius: 6,
-                    pointBackgroundColor: 'rgb(102, 126, 234)',
-                    pointBorderColor: '#fff',
+                    pointBackgroundColor: '#8b96ff',
+                    pointBorderColor: '#0d1220',
                     pointBorderWidth: 2
                 }]
             },
@@ -52,14 +52,14 @@ class ChartsManager {
                         position: 'top',
                         labels: {
                             font: { size: 12, weight: 'bold' },
-                            color: '#333'
+                            color: '#a5b0c8'
                         }
                     },
                     title: {
                         display: true,
                         text: 'Real-Time Visual Presence',
                         font: { size: 14, weight: 'bold' },
-                        color: '#333'
+                        color: '#a5b0c8'
                     },
                     tooltip: {
                         mode: 'index',
@@ -67,7 +67,7 @@ class ChartsManager {
                         backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         titleColor: '#fff',
                         bodyColor: '#fff',
-                        borderColor: 'rgb(102, 126, 234)',
+                        borderColor: '#8b96ff',
                         borderWidth: 1,
                         padding: 10,
                         displayColors: false,
@@ -82,17 +82,17 @@ class ChartsManager {
                         max: 100,
                         ticks: {
                             callback: (value) => value + '%',
-                            color: '#666',
+                            color: '#6b7690',
                             font: { size: 11 }
                         },
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.05)',
+                            color: 'rgba(148, 163, 184, 0.08)',
                             drawBorder: false
                         },
                         title: {
                             display: true,
                             text: 'Presence Level',
-                            color: '#333',
+                            color: '#a5b0c8',
                             font: { size: 12, weight: 'bold' }
                         }
                     },
@@ -101,7 +101,7 @@ class ChartsManager {
                             maxRotation: 0,
                             autoSkip: true,
                             maxTicksLimit: 10,
-                            color: '#666',
+                            color: '#6b7690',
                             font: { size: 10 }
                         },
                         grid: {
@@ -111,7 +111,7 @@ class ChartsManager {
                         title: {
                             display: true,
                             text: 'Time',
-                            color: '#333',
+                            color: '#a5b0c8',
                             font: { size: 12, weight: 'bold' }
                         }
                     }

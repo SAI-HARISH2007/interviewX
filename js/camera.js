@@ -28,7 +28,7 @@ class CameraManager {
 
             this.videoElement.srcObject = this.stream;
             this.isActive = true;
-            this.cameraStatus.textContent = '📹 Camera Active';
+            this.cameraStatus.textContent = 'Camera live';
             this.cameraStatus.classList.add('active');
 
             this.startPresenceAnalysis();
@@ -36,7 +36,7 @@ class CameraManager {
             return { success: true, message: 'Camera started successfully!' };
         } catch (error) {
             console.error('Camera error:', error);
-            this.cameraStatus.textContent = '❌ Camera Error';
+            this.cameraStatus.textContent = 'Camera error';
             return { success: false, message: 'Camera access failed. Please check browser permissions.' };
         }
     }
@@ -148,7 +148,7 @@ class CameraManager {
             bar.classList.add('high');
         }
 
-        text.textContent = Math.round(this.presenceLevel) + '% Presence';
+        text.textContent = Math.round(this.presenceLevel) + '%';
     }
 
     getPresenceLevel() {
