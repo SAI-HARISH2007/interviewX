@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewX - AI-Powered Interview Practice</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- No face-api.js needed - using custom webcam analysis -->
+</head>
+<body>
+    <!-- Authentication Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🎯 InterviewX</h1>
+                <p>AI-Powered Interview Practice Platform</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button id="loginBtn" class="btn primary">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signupForm" class="auth-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button id="signupBtn" class="btn primary">Sign Up</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Login</a></p>
+            </div>
+            
+            <div id="authMessage" class="auth-message"></div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>🎯 InterviewX</h1>
+            </div>
+            <div class="header-right">
+                <span id="userName" class="user-name"></span>
+                <button id="logoutBtn" class="btn secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="main-content">
+                <!-- Left Side - Video Interview -->
+                <div class="video-section glass">
+                    <div class="section-header">
+                        <h2>📹 Video Interview</h2>
+                        <div class="controls">
+                            <button id="startInterviewBtn" class="btn primary">▶ Start Interview</button>
+                            <button id="stopInterviewBtn" class="btn danger hidden">⏹ Stop</button>
+                            <button id="uploadResumeBtn" class="btn secondary">📄 Upload Resume</button>
+                        </div>
+                    </div>
+
+                    <!-- Video Display -->
+                    <div class="video-container">
+                        <video id="videoElement" autoplay muted></video>
+                        <canvas id="videoCanvas" style="display:none;"></canvas>
+                        <div id="cameraStatus" class="camera-status">Camera Off</div>
+                    </div>
+
+                    <!-- Current Question Display -->
+                    <div class="question-display">
+                        <h3>Current Question:</h3>
+                        <p id="currentQuestion">Click "Start Interview" to begin</p>
+                        <div id="questionTimer" class="timer">Time: 0s</div>
+                    </div>
+
+                    <!-- Voice Controls -->
+                    <div class="voice-controls">
+                        <button id="micBtn" class="btn mic-btn" disabled>🎤 Start Speaking</button>
+                        <div id="transcriptDisplay" class="transcript">Your answer will appear here...</div>
+                    </div>
+
+                    <!-- Resume Upload (Hidden) -->
+                    <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" style="display:none;">
+                </div>
+
+                <!-- Right Side - Analytics -->
+                <div class="analytics-section glass">
+                    <div class="section-header">
+                        <h2>📊 Real-Time Analytics</h2>
+                    </div>
+
+                    <!-- Confidence Meter -->
+                    <div class="confidence-meter">
+                        <h3>😊 Confidence Level</h3>
+                        <div class="confidence-bar-container">
+                            <div id="confidenceBar" class="confidence-bar" style="width: 0%"></div>
+                        </div>
+                        <p id="confidenceText">0% Confident</p>
+                    </div>
+
+                    <!-- Real-time Graph -->
+                    <div class="chart-container">
+                        <canvas id="realtimeChart"></canvas>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-value" id="responseTime">0s</div>
+                            <div class="stat-label">Response Time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="fillerWords">0</div>
+                            <div class="stat-label">Filler Words</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💬</div>
+                            <div class="stat-value" id="wordCount">0</div>
+                            <div class="stat-label">Words Spoken</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✨</div>
+                            <div class="stat-value" id="aiScore">-</div>
+                            <div class="stat-label">AI Score</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Feedback Panel -->
+                    <div class="feedback-panel">
+                        <h3>🤖 AI Feedback</h3>
+                        <div id="aiFeedback" class="feedback-content">
+                            <p>Start answering questions to receive AI-powered feedback!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview History -->
+            <div class="history-section glass">
+                <h2>📜 Interview History</h2>
+                <div id="historyContainer" class="history-container">
+                    <p>No previous interviews. Start your first interview!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loader"></div>
+        <p>Processing with AI...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/ai-analysis.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

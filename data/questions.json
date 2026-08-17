@@ -1,0 +1,79 @@
+{
+    "questions": [
+        {
+            "question": "Tell me about yourself and your professional background.",
+            "category": "General",
+            "tips": "Keep it concise, relevant, and focus on your most recent experiences that relate to the role. Structure: Present → Past → Future."
+        },
+        {
+            "question": "Why are you interested in this position?",
+            "category": "Motivation",
+            "tips": "Show enthusiasm and demonstrate that you've researched the company and role. Connect your goals with the company's mission."
+        },
+        {
+            "question": "What are your greatest strengths?",
+            "category": "Self-Assessment",
+            "tips": "Provide specific examples and explain how these strengths benefit the employer. Use the STAR method for examples."
+        },
+        {
+            "question": "What is your biggest weakness?",
+            "category": "Self-Assessment",
+            "tips": "Be honest but show how you're actively working to improve this area. Turn it into a learning opportunity."
+        },
+        {
+            "question": "Where do you see yourself in 5 years?",
+            "category": "Career Goals",
+            "tips": "Show ambition but also demonstrate commitment to growing with the company. Be realistic and relevant."
+        },
+        {
+            "question": "Describe a challenging situation you faced at work and how you handled it.",
+            "category": "Behavioral",
+            "tips": "Use the STAR method: Situation, Task, Action, Result. Be specific about your role and the outcome."
+        },
+        {
+            "question": "Tell me about a time you had to work with a difficult team member.",
+            "category": "Behavioral",
+            "tips": "Focus on your communication skills and ability to find solutions rather than blame. Show emotional intelligence."
+        },
+        {
+            "question": "How do you handle stress and pressure?",
+            "category": "Behavioral",
+            "tips": "Provide concrete examples of stress management techniques you've used successfully. Show resilience."
+        },
+        {
+            "question": "Why should we hire you over other candidates?",
+            "category": "Competitive Edge",
+            "tips": "Summarize your unique value proposition and how you can solve their specific problems. Be confident but humble."
+        },
+        {
+            "question": "Describe your leadership style.",
+            "category": "Leadership",
+            "tips": "Provide examples of how you've led teams or projects. Show adaptability and focus on results."
+        },
+        {
+            "question": "Tell me about a time you failed and what you learned from it.",
+            "category": "Behavioral",
+            "tips": "Show vulnerability, accountability, and most importantly, what you learned and applied afterward."
+        },
+        {
+            "question": "How do you prioritize your tasks when you have multiple deadlines?",
+            "category": "Time Management",
+            "tips": "Explain your systematic approach and give examples of tools or methods you use. Show organization skills."
+        },
+        {
+            "question": "What motivates you in your work?",
+            "category": "Motivation",
+            "tips": "Connect your motivation to aspects of the job you're applying for. Be genuine and specific."
+        },
+        {
+            "question": "Can you give an example of when you had to adapt to a significant change at work?",
+            "category": "Behavioral",
+            "tips": "Demonstrate flexibility and positive attitude. Show how you embraced change and helped others."
+        },
+        {
+            "question": "How do you handle constructive criticism?",
+            "category": "Self-Assessment",
+            "tips": "Show maturity and growth mindset. Provide an example of how criticism helped you improve."
+        }
+    ]
+}
