@@ -12,7 +12,7 @@ This README is deliberately precise about which features use an LLM. If it's not
 
 | Feature | How it works |
 |---|---|
-| **Question generation** | `POST /api/questions` asks Groq `llama-3.1-8b-instant` for role-specific questions (your role + difficulty), returned as validated JSON. |
+| **Question generation** | `POST /api/questions` asks Groq `openai/gpt-oss-20b` for role-specific questions (your role + difficulty), returned as validated JSON. |
 | **Answer feedback** | `POST /api/feedback` sends the question, your transcribed answer, and delivery metrics to the same model, which returns a 1–10 rubric score with a written justification, specific strengths, specific gaps, and one concrete suggestion. |
 
 Every question set and every feedback card in the UI carries a badge saying whether it came from the **LLM** (green) or the **offline fallback** (yellow). The header shows a live status badge for the same thing.

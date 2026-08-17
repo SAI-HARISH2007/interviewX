@@ -41,7 +41,9 @@ function loadDotEnv() {
 loadDotEnv();
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.1-8b-instant';
+// llama-3.1-8b-instant was retired from Groq's free tier in 2026;
+// openai/gpt-oss-20b is the closest current small/fast replacement.
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const GROQ_URL = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 
 // ---------------------------------------------------------------------------
