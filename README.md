@@ -1,255 +1,95 @@
-# InterviewX - Advanced AI Interview Practice Platform
+# InterviewX
 
-An advanced web-based interview practice platform featuring AI-powered feedback, real-time confidence tracking, voice interaction, and video analysis.
+Interview practice in the browser: pick a target role, answer spoken questions on camera, and get structured feedback on what you said.
 
-## 🌟 Features
+Built with vanilla HTML/CSS/JS and a single zero-dependency Node server (`server.js`) that proxies to the Groq API.
 
-### Core Features
-- ✅ **User Authentication** - Secure login/signup system
-- 🎥 **Video Interview** - Real-time webcam integration
-- 🎤 **Voice Recognition** - Speech-to-text for answers
-- 🔊 **AI Voice** - Questions spoken by AI interviewer
-- 📊 **Real-Time Analytics** - Live confidence tracking with graphs
-- 🤖 **AI Feedback** - Powered by Google Gemini API
-- 📄 **Resume Upload** - (Future: AI-tailored questions)
-- 📜 **Interview History** - Track your progress over time
-- 💾 **Data Persistence** - User data saved in browser storage
+## What is actually AI (and what is not)
 
-### Advanced Features
-- Real-time confidence level detection based on video analysis
-- Filler word detection and counting
-- Response time tracking
-- AI-powered answer quality scoring
-- Interactive charts and visualizations
-- Session history and progress tracking
+This README is deliberately precise about which features use an LLM. If it's not listed as LLM-powered, it isn't.
 
-## 📁 Project Structure
+### LLM-powered (requires the server running with a `GROQ_API_KEY`)
 
-```
-InterviewX/
-│
-├── index.html              # Main HTML file
-├── README.md               # This file
-│
-├── css/
-│   ├── style.css          # Main application styles
-│   ├── auth.css           # Authentication page styles
-│   └── dashboard.css      # Dashboard enhancements
-│
-├── js/
-│   ├── app.js             # Main application logic
-│   ├── auth.js            # Authentication management
-│   ├── camera.js          # Webcam & facial analysis
-│   ├── speech.js          # Voice recognition & synthesis
-│   ├── ai-analysis.js     # Gemini AI integration
-│   ├── charts.js          # Real-time graph updates
-│   └── storage.js         # Data persistence
-│
-└── data/
-    └── questions.json     # Interview questions database
-```
+| Feature | How it works |
+|---|---|
+| **Question generation** | `POST /api/questions` asks Groq `llama-3.1-8b-instant` for role-specific questions (your role + difficulty), returned as validated JSON. |
+| **Answer feedback** | `POST /api/feedback` sends the question, your transcribed answer, and delivery metrics to the same model, which returns a 1–10 rubric score with a written justification, specific strengths, specific gaps, and one concrete suggestion. |
 
-## 🚀 Quick Start
+Every question set and every feedback card in the UI carries a badge saying whether it came from the **LLM** (green) or the **offline fallback** (yellow). The header shows a live status badge for the same thing.
 
-### 1. Download/Clone the Project
-Download all files and maintain the folder structure shown above.
+### NOT AI — local features, honestly labeled
 
-### 2. Set Up the Project
+| Feature | What it really is |
+|---|---|
+| **Speech-to-text** | The browser's built-in Web Speech API (best in Chrome/Edge). Nothing we built; no LLM involved. |
+| **Question voice** | Browser speech synthesis reading the question aloud. |
+| **Offline question bank** | `data/questions.json` — 15 generic hardcoded questions, used only when the LLM is unavailable and labeled *"Built-in question bank — NOT AI-generated"* in the UI. |
+| **Offline scoring fallback** | A word-count/filler-word/timing heuristic. It does **not** read your answer's content. Labeled *"Offline heuristic — not AI"* wherever it appears. |
+| **"Visual presence" meter** | A brightness/stability heuristic on the webcam feed: are you in frame and is the scene stable. It is **not** face, emotion, or confidence detection, and the UI says so. |
+| **Filler words / word count / response time** | Simple local counting and timers. |
+| **Login/signup** | Browser `localStorage` only, Base64-"encoded" passwords. A demo, not real authentication — don't reuse a real password. |
+
+## Quick start
+
+Requires Node 18+ (no `npm install` needed — the server has zero dependencies).
+
 ```bash
-# Create the folder structure
-mkdir InterviewX
-cd InterviewX
-mkdir css js data
+# 1. Get a free API key at https://console.groq.com/keys
+cp .env.example .env        # then paste your key into .env
 
-# Copy all files to their respective folders
+# 2. Run
+node server.js
+
+# 3. Open http://localhost:3000 in Chrome or Edge
 ```
 
-### 3. API Key Setup
-The Gemini API key is already configured in `js/ai-analysis.js`. If you need to change it:
+Grant microphone + camera permission when prompted, type a target role (e.g. *"Data Analyst"*), and press **Start Interview**.
 
-```javascript
-// In js/ai-analysis.js
-this.apiKey = 'YOUR_API_KEY_HERE';
+Without a key (or if you open `index.html` directly as a file) the app still runs, but in **offline mode**: generic question bank, heuristic scoring, and yellow "not AI" labels everywhere.
+
+## API
+
+| Endpoint | Body | Returns |
+|---|---|---|
+| `GET /api/health` | – | `{ ok, llm: bool, model }` |
+| `POST /api/questions` | `{ role, difficulty, count }` | `{ source: "llm", model, questions: [{ question, category, tips }] }` |
+| `POST /api/feedback` | `{ question, answer, role, metrics }` | `{ source: "llm", model, score: 1-10, justification, strengths[], gaps[], suggestion }` |
+
+Errors return proper status codes (`503` when no key is configured), and the frontend falls back to labeled offline mode.
+
+The Groq key lives only on the server (`.env`, gitignored). It is never sent to the browser.
+
+## Project structure
+
+```
+├── server.js           # Static host + Groq LLM endpoints (zero deps, Node 18+)
+├── .env.example        # GROQ_API_KEY template
+├── index.html
+├── css/                # style.css (design system) · auth.css · dashboard.css
+├── js/
+│   ├── config.js       # App configuration (API paths, timings)
+│   ├── ai-analysis.js  # AIService: LLM calls + labeled heuristic fallback
+│   ├── app.js          # Interview flow
+│   ├── auth.js         # localStorage demo auth
+│   ├── camera.js       # Webcam + presence heuristic (not AI)
+│   ├── speech.js       # Web Speech API wrapper (not AI)
+│   ├── charts.js       # Chart.js live presence graph
+│   ├── storage.js      # localStorage persistence
+│   ├── ui.js           # Toasts + modals
+│   └── utils.js
+└── data/questions.json # Offline fallback question bank (not AI)
 ```
 
-### 4. Run the Application
-Simply open `index.html` in a modern web browser:
-- **Chrome** (Recommended)
-- **Edge**
-- **Firefox**
-- **Safari** (Limited speech support)
-
-### 5. Grant Permissions
-When prompted, allow:
-- 🎤 **Microphone access** - For voice recognition
-- 📹 **Camera access** - For video confidence tracking
-
-## 📖 How to Use
-
-### First Time Setup
-1. **Create an Account**
-   - Click "Sign Up"
-   - Enter your full name, username, and password
-   - Click "Sign Up" button
-
-2. **Login**
-   - Use your username and password
-   - Click "Login"
-
-### Starting an Interview
-1. Click "▶ Start Interview"
-2. Allow camera and microphone access
-3. The AI will ask you a question (voice + text)
-4. Click "🎤 Start Speaking" to begin your answer
-5. Speak your answer clearly
-6. Click "🔴 Recording..." again to submit
-
-### During the Interview
-- **Watch your confidence level** - Updates in real-time based on video
-- **Monitor filler words** - System detects "um", "uh", "like", etc.
-- **Track response time** - See how long you take to answer
-- **Real-time graph** - Visual representation of your confidence over time
-
-### After Each Answer
-- AI analyzes your response
-- You receive:
-  - AI Score (0-100)
-  - Strengths identified
-  - Areas for improvement
-  - Specific suggestions
-
-### Ending the Interview
-- Click "⏹ Stop" to end the session
-- View your session summary
-- Check your interview history
-
-## 💾 User Data Storage
-
-### How Data is Stored
-User credentials are stored in **localStorage** with simple encryption:
-
-**Format:** `username~encrypted_password~full_name`
-
-Example users.dat content:
-```
-# InterviewX User Database
-# Format: username~password~name
-john_doe~am9objEyMzQ=~John Doe
-jane_smith~amFuZTEyMzQ=~Jane Smith
-```
-
-### Export/Import Users
-The system automatically saves user data. You can:
-- Download user data as `users.dat`
-- Import previously saved `users.dat` files
-
-### Security Note
-⚠️ **This is a development/demo implementation**
-- Passwords are Base64 encoded (NOT secure for production)
-- Data stored in browser localStorage
-- For production, use:
-  - Backend server (Node.js/Python)
-  - Proper encryption (bcrypt)
-  - Database (MongoDB/PostgreSQL)
-  - JWT authentication
-
-## 🎯 Tips for Best Results
-
-### Camera Setup
-- ✅ Good lighting (face clearly visible)
-- ✅ Stable position (less movement = higher confidence)
-- ✅ Look at the camera (simulates eye contact)
-- ✅ Neutral background
-
-### Voice Setup
-- ✅ Quiet environment
-- ✅ Clear speech
-- ✅ Normal pace (not too fast/slow)
-- ✅ Avoid filler words (um, uh, like)
-
-### Answer Quality
-- ✅ Use STAR method (Situation, Task, Action, Result)
-- ✅ Be specific with examples
-- ✅ 50-150 words is optimal
-- ✅ Take 5-10 seconds to think before answering
-
-## 🔧 Troubleshooting
-
-### Camera Not Working
-- Check browser permissions
-- Ensure no other app is using the camera
-- Try refreshing the page
-- Use Chrome or Edge for best support
-
-### Voice Recognition Not Working
-- Check microphone permissions
-- Ensure microphone is connected
-- Speak clearly and at normal volume
-- Chrome has best speech recognition support
-
-### AI Feedback Not Loading
-- Check internet connection
-- Verify API key is correct
-- Check browser console for errors
-- System will use fallback analysis if API fails
-
-### No Sound for Questions
-- Check system volume
-- Enable sound in browser
-- Some browsers block autoplay - click to enable
-
-## 🌐 Browser Compatibility
+## Browser support
 
 | Feature | Chrome | Edge | Firefox | Safari |
-|---------|--------|------|---------|--------|
+|---|---|---|---|---|
 | Camera | ✅ | ✅ | ✅ | ✅ |
-| Voice Recognition | ✅ | ✅ | ⚠️ | ❌ |
-| Voice Synthesis | ✅ | ✅ | ✅ | ✅ |
-| Charts | ✅ | ✅ | ✅ | ✅ |
+| Speech recognition | ✅ | ✅ | ❌ | ⚠️ |
+| Speech synthesis | ✅ | ✅ | ✅ | ✅ |
 
-✅ Fully Supported | ⚠️ Partial Support | ❌ Not Supported
+## Privacy
 
-## 🔒 Privacy & Data
-
-- All data stored locally in your browser
-- No data sent to external servers (except Gemini AI for analysis)
-- Clear browser data to reset everything
-- User data exportable/importable
-
-## 🚀 Future Enhancements
-
-- [ ] Backend server with proper authentication
-- [ ] Resume parsing and AI-tailored questions
-- [ ] Video recording and playback
-- [ ] Advanced facial emotion detection
-- [ ] Peer comparison and leaderboards
-- [ ] Industry-specific question sets
-- [ ] Multi-language support
-- [ ] Mobile app version
-
-## 📝 License
-
-This is a demo/educational project. Feel free to modify and enhance!
-
-## 🤝 Support
-
-For issues or questions:
-1. Check browser console for errors
-2. Verify all files are in correct folders
-3. Ensure internet connection for AI features
-4. Try in Chrome browser for best compatibility
-
-## 👨‍💻 Development
-
-Built with:
-- Vanilla JavaScript (No frameworks!)
-- Chart.js for visualizations
-- Google Gemini AI for analysis
-- Web Speech API for voice features
-- MediaDevices API for camera
-
----
-
-**Made with ❤️ for interview success!**
-
-Start practicing and ace your next interview! 🎯
+- Your transcribed answers are sent to the local server and forwarded to the Groq API for evaluation (when LLM mode is on). Video never leaves your machine — the presence heuristic runs entirely in your browser.
+- Chrome's speech recognition may process audio on Google servers (that's how the Web Speech API works).
+- Account data and history live only in your browser's localStorage.
